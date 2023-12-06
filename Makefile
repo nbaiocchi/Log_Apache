@@ -4,7 +4,7 @@ OBJ		= 	$(SRC:.cpp=.o)
 
 CFLAGS	+=	-Iinclude --std=c++20 -ansi -pedantic -Wall -Wextra -Werror
 
-NAME	=	TP2
+NAME	=	analog
 
 all:	$(NAME)
 
