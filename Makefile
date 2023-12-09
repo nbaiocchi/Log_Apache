@@ -2,7 +2,7 @@ SRC		=	$(wildcard ./src/*.cpp)			\
 
 OBJ		= 	$(SRC:.cpp=.o)
 
-CFLAGS	+=	-Iinclude --std=c++20 -ansi -pedantic -Wall -Wextra -Werror
+CFLAGS	+=	-g -Wall -ansi -pedantic -std=c++11
 
 NAME	=	analog
 
