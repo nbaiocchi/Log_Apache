@@ -1,23 +1,29 @@
 #include <iostream>
-#include <fstream>
+#include <string>
 #include <vector>
+#include <fstream>
 #include "Lecture.h"
+#include "Stockage.h"
 
 using namespace std;
 
-void lireFichier(const string& nomFichier) {
+struct args {
+    string g;
+    bool e;
+    string t;
+};
+
+
+unordered_map<string, Occurence> lireFichier(const string& nomFichier, bool exclure) {
     vector<vector<string> > lignes;
     ifstream fichier(nomFichier);
 
     if (fichier.is_open()) {
         string ligne;
-        Lecture lecture;
 
         while (getline(fichier, ligne)) {
             Lecture lecture(ligne);
-            // vector<string> res = lecture.lireUneLigne();
             lignes.push_back(lecture.lireUneLigne());
-            
         }
 
         fichier.close();
@@ -25,23 +31,49 @@ void lireFichier(const string& nomFichier) {
         cout << "Erreur lors de l'ouverture du fichier." << endl;
     }
 
-    int size = lignes.size();
-    for (int i = 0; i < size; i++) {
-        int size2 = lignes[i].size();
-        for (int j = 0; j < size2; j++) {
-            cout << lignes[i][j] << " ";
-        }
-        cout << endl;
-    }
+    Stockage stockage(lignes, exclure);
+    
+    return stockage.GetMap();
 }
 
+int main(int argc, char* argv[]) {
+    
+    if (argc < 2) {
+        cout << "Usage: " << argv[0] << " [-g <nomfichier.dot>] [-e] [-t <heure>] <fichier>" << endl;
+        return 1;
+    }
 
+    string nomFichier = argv[argc - 1];
+    args arguments { "NULL", false, "NULL" };
 
+    for (int i = 1; i < argc-1;) {
+        string option = argv[i];
+        string argument = argv[i + 1];
 
-int main() {
-    string nomFichier = "Fichier-Fournis/exemple-mini-non-exhaustif.txt";
-    // string nomFichier = "Fichier-Fournis/anonyme.log";
-    lireFichier(nomFichier);
+        if (option == "-g") {
+            arguments.g = argument;
+            cout << "Option -g non implémentée." << endl;
+            i += 2;
+        } else if (option == "-e") {
+            arguments.e = true;
+            i++;
+        } else if (option == "-t") {
+            arguments.t = argument;
+            cout << "Option -t non implémentée." << endl;
+            i += 2;
+        } else {
+            i++;
+        }
+
+    }
+
+    unordered_map<string, Occurence> res = lireFichier(nomFichier, arguments.e);
+        
+    auto it = res.begin();
+    while (it != res.end()) {
+        std::cout << it->first << "  (" << it->second.GetOccurence() << " hits" << ')' << std::endl;
+        ++it;
+    }
 
     return 0;
 }

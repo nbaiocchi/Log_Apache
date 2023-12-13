@@ -10,12 +10,11 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "Occurence.h"
 
 using namespace std;
 
-#if !defined(STOCKAGE_H)
-#define STOCKAGE_H
+#if !defined(OCCURENCE_H)
+#define OCCURENCE_H
 
 //--------------------------------------------------- Interfaces utilisées
 //------------------------------------------------------------- Constantes
@@ -26,47 +25,43 @@ using namespace std;
 //
 //------------------------------------------------------------------------
 
-class Stockage
+class Occurence
 {
     //----------------------------------------------------------------- PUBLIC
 
 public:
     //-------------------------------------------- Constructeurs - destructeur
-    // string Stockage::FormatHorraire(string horraire);
 
-    unordered_map<string, Occurence> GetMap();
+    int GetOccurence() {
+        return occ;
+    };
 
-    Stockage(vector<vector<string> > myLignes, bool exclure);
-    // Mode d'emploi (constructeur de copie) :
-    //
-    // Contrat :
-    //
-
-    Stockage();
+    Occurence() {
+        occ = 1;
+    };
     // Mode d'emploi :
     //
     // Contrat :
     //
 
-    virtual ~Stockage();
+    virtual ~Occurence() {};
     // Mode d'emploi :
     //
     // Contrat :
     //
+
+    friend class Stockage;
 
     //------------------------------------------------------------------ PRIVE
 
 protected:
-    // vector<vector<string> > lignes;
-    unordered_map<string, Occurence> myMap2;
+    int occ;
+    unordered_map<string, int> mySource;
     //----------------------------------------------------- Méthodes protégées
 
     //----------------------------------------------------- Attributs protégés
 };
 
-string FormatHorraire(string horraire);
-string FormatFile(string file);
-int OccurenceTest(string file, vector<vector<string> > lignes);
 //-------------------------------- Autres définitions dépendantes de <Lecture>
 
-#endif // STOCKAGE_H
+#endif // OCCURENCE_H
