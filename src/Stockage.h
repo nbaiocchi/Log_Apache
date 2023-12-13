@@ -36,7 +36,7 @@ public:
 
     unordered_map<string, Occurence> GetMap();
 
-    Stockage(vector<vector<string> > myLignes, bool exclure);
+    Stockage(vector<vector<string> > myLignes, bool exclure, string heure);
     // Mode d'emploi (constructeur de copie) :
     //
     // Contrat :
@@ -64,9 +64,8 @@ protected:
     //----------------------------------------------------- Attributs protégés
 };
 
-string FormatHorraire(string horraire);
+int FormatHorraire(string horraire);
 string FormatFile(string file);
-int OccurenceTest(string file, vector<vector<string> > lignes);
 //-------------------------------- Autres définitions dépendantes de <Lecture>
 
 #endif // STOCKAGE_H

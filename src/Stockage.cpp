@@ -28,18 +28,13 @@ using namespace std;
 
 
 unordered_map<string, Occurence> Stockage::GetMap() {
-    // Revert myMap2 before returning
-    unordered_map<string, Occurence> revertedMap;
-    for (const auto& entry : myMap2) {
-        revertedMap[entry.first] = entry.second;
-    }
-    return revertedMap;
+    return myMap2;
 }
 
 
-string FormatHorraire(string horraire) {
-    horraire = horraire.substr(horraire.find(":") + 1, 5);
-    return horraire;
+int FormatHorraire(string horraire) {
+    horraire = horraire.substr(horraire.find(":") + 1, 2);
+    return stoi(horraire);
 }
 
 string FormatFile(string file) {
@@ -54,7 +49,7 @@ void CheckStartDest(string *str)
     }
 }
 
-Stockage::Stockage(vector<vector<string> > myLignes, bool exclure)
+Stockage::Stockage(vector<vector<string> > myLignes, bool exclure, string heure)
 // Algorithme :
 //
 {
@@ -76,6 +71,11 @@ Stockage::Stockage(vector<vector<string> > myLignes, bool exclure)
                     continue;
                 }
             }
+            if (heure != "NULL") {
+                if (FormatHorraire(myLignes[i][3]) < stoi(heure) || FormatHorraire(myLignes[i][3]) > stoi(heure) + 1 ) {
+                    continue;
+                }
+            }
             tmp2.mySource[myLignes[i][7]] = 1;
             myMap2[FormatFile(myLignes[i][4])] = tmp2;
             
@@ -89,35 +89,24 @@ Stockage::Stockage(vector<vector<string> > myLignes, bool exclure)
         }
     }
 
-    // Sort myMap2 by occurrence count in descending order
+    // Sort myMap2 by occurrence count in ascending order
     vector<pair<string, Occurence>> sortedMap(myMap2.begin(), myMap2.end());
     sort(sortedMap.begin(), sortedMap.end(), [](const pair<string, Occurence>& a, const pair<string, Occurence>& b) {
-        return a.second.occ > b.second.occ;
+        return a.second.occ < b.second.occ;
     });
 
-    // Keep only the top 10 entries in myMap2
     if (sortedMap.size() > 10) {
-        sortedMap.resize(10);
+        sortedMap.erase(sortedMap.begin(), sortedMap.end() - 10);
     } else {
-        sortedMap.resize(sortedMap.size());
+        sortedMap.erase(sortedMap.begin(), sortedMap.end() - sortedMap.size());
     }
+
 
     // Update myMap2 with the top 10 entries
     myMap2.clear();
     for (const auto& entry : sortedMap) {
         myMap2[entry.first] = entry.second;
     }
-
-    // Affichage de la map
-    // for (const auto& entry : myMap2) {
-    //     cout << "File: " << entry.first << endl;
-    //     cout << "Occurrences: " << entry.second.occ << endl;
-    //     cout << "Sources:" << endl;
-    //     for (const auto& source : entry.second.mySource) {
-    //         cout << "- " << source.first << ": " << source.second << endl;
-    //     }
-    //     cout << endl;
-    // }
 
 } //----- Fin de Stockage
 

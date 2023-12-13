@@ -14,7 +14,7 @@ struct args {
 };
 
 
-unordered_map<string, Occurence> lireFichier(const string& nomFichier, bool exclure) {
+unordered_map<string, Occurence> lireFichier(const string& nomFichier, bool exclure, const string& heure) {
     vector<vector<string> > lignes;
     ifstream fichier(nomFichier);
 
@@ -31,7 +31,7 @@ unordered_map<string, Occurence> lireFichier(const string& nomFichier, bool excl
         cout << "Erreur lors de l'ouverture du fichier." << endl;
     }
 
-    Stockage stockage(lignes, exclure);
+    Stockage stockage(lignes, exclure, heure);
     
     return stockage.GetMap();
 }
@@ -59,7 +59,6 @@ int main(int argc, char* argv[]) {
             i++;
         } else if (option == "-t") {
             arguments.t = argument;
-            cout << "Option -t non implémentée." << endl;
             i += 2;
         } else {
             i++;
@@ -67,7 +66,8 @@ int main(int argc, char* argv[]) {
 
     }
 
-    unordered_map<string, Occurence> res = lireFichier(nomFichier, arguments.e);
+    unordered_map<string, Occurence> res = lireFichier(nomFichier, arguments.e, arguments.t);
+
         
     auto it = res.begin();
     while (it != res.end()) {
