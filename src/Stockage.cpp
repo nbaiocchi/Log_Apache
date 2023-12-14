@@ -31,7 +31,6 @@ unordered_map<string, Occurence> Stockage::GetMap() {
     return myMap2;
 }
 
-
 int FormatHorraire(string horraire) {
     horraire = horraire.substr(horraire.find(":") + 1, 2);
     return stoi(horraire);

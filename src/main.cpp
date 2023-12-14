@@ -36,6 +36,40 @@ unordered_map<string, Occurence> lireFichier(const string& nomFichier, bool excl
     return stockage.GetMap();
 }
 
+void printNode(unordered_map<string, Occurence> map)
+{
+
+    
+}
+
+
+void genDotFile(unordered_map<string, Occurence> res, string nomFichier) {
+    if (nomFichier != "NULL") {
+        ofstream fichier(nomFichier);
+        int tmp = 0;
+
+        if (fichier.is_open()) {
+            fichier << "digraph {" << endl;
+            auto it = res.begin();
+            while (it != res.end()) {
+                // cout << it->first << " -> " << it->second.GetNomFichier() << " hits" << ')' << std::endl;
+                auto map2 = it->second.GetMap();
+                auto it2 = map2.begin();
+                while (it2 != map2.end()) {
+                    fichier << '"' << it->first << '"' << " -> " << '"' << it2->first << '"' << " [label=\"" << it2->second << "\"];" << endl;
+                    ++it2;
+                }
+
+                ++it;
+            }
+            fichier << "}" << endl;
+            fichier.close();
+        } else {
+            cout << "Erreur lors de l'ouverture du fichier." << endl;
+        }
+    }
+}
+
 int main(int argc, char* argv[]) {
     
     if (argc < 2) {
@@ -52,7 +86,6 @@ int main(int argc, char* argv[]) {
 
         if (option == "-g") {
             arguments.g = argument;
-            cout << "Option -g non implémentée." << endl;
             i += 2;
         } else if (option == "-e") {
             arguments.e = true;
@@ -68,11 +101,23 @@ int main(int argc, char* argv[]) {
 
     unordered_map<string, Occurence> res = lireFichier(nomFichier, arguments.e, arguments.t);
 
+    if (arguments.g != "NULL" && arguments.g.find(".dot") != string::npos) {
+        cout << "Dot-file " << arguments.g << " generated" << endl;
+    }
+
+    if (arguments.t != "NULL" && (stoi(arguments.t) > 0 && stoi(arguments.t) < 23)) {
+        cout << "Warning : only hits beetween " << arguments.t << "h and " << stoi(arguments.t) + 1 << "h have been taken into account" << endl;
+    }
+
         
     auto it = res.begin();
     while (it != res.end()) {
         std::cout << it->first << "  (" << it->second.GetOccurence() << " hits" << ')' << std::endl;
         ++it;
+    }
+
+    if (arguments.g != "NULL" && arguments.g.find(".dot") != string::npos) {
+        genDotFile(res, arguments.g);
     }
 
     return 0;

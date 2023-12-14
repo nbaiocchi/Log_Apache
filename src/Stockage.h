@@ -36,6 +36,7 @@ public:
 
     unordered_map<string, Occurence> GetMap();
 
+
     Stockage(vector<vector<string> > myLignes, bool exclure, string heure);
     // Mode d'emploi (constructeur de copie) :
     //

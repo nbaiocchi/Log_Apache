@@ -36,6 +36,15 @@ public:
         return occ;
     };
 
+    string GetNomFichier() {
+        return mySource.begin()->first;
+    };
+
+    unordered_map<string, int> GetMap() {
+        return mySource;
+    };
+
+
     Occurence() {
         occ = 1;
     };
