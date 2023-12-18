@@ -35,6 +35,8 @@ public:
     // string Stockage::FormatHorraire(string horraire);
 
     unordered_map<string, Occurence> GetMap();
+    void CheckConfigFile();
+    bool CheckIsInIgnoreFiles(string file);
 
 
     Stockage(vector<vector<string> > myLignes, bool exclure, string heure);
@@ -58,8 +60,9 @@ public:
     //------------------------------------------------------------------ PRIVE
 
 protected:
-    // vector<vector<string> > lignes;
     unordered_map<string, Occurence> myMap2;
+    string ignoreSource;
+    vector<string> ignoreFiles;
     //----------------------------------------------------- Méthodes protégées
 
     //----------------------------------------------------- Attributs protégés

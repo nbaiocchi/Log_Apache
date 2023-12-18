@@ -46,7 +46,6 @@ void printNode(unordered_map<string, Occurence> map)
 void genDotFile(unordered_map<string, Occurence> res, string nomFichier) {
     if (nomFichier != "NULL") {
         ofstream fichier(nomFichier);
-        int tmp = 0;
 
         if (fichier.is_open()) {
             fichier << "digraph {" << endl;

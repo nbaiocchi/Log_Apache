@@ -41,11 +41,50 @@ string FormatFile(string file) {
     return file;
 }
 
-void CheckStartDest(string *str)
+void Stockage::CheckConfigFile()
 {
-    if (str->find("http://intranet-if.insa-lyon.fr") != string::npos) {
-        str->substr(0, 33);
+    const string nomFichier = "ConfigFile/ConfigFile.txt";
+
+    std::ifstream fichier(nomFichier);
+
+    if (fichier.is_open()) {
+        std::string ligne;
+        int numeroLigne = 1;
+        while (std::getline(fichier, ligne)) {
+            if (numeroLigne == 2) {
+                ignoreSource = ligne.substr(7, ligne.length());
+            }
+            if (numeroLigne == 3) {
+                string tmp = ligne.substr(11, ligne.length());
+
+                size_t start = 0, end = 0;
+
+                // Trouver les éléments en utilisant ',' comme délimiteur
+                while ((end = tmp.find(',', start)) != std::string::npos) {
+                    ignoreFiles.push_back(tmp.substr(start, end - start));
+                    start = end + 1;
+                }
+
+                // Ajouter le dernier élément
+                ignoreFiles.push_back(tmp.substr(start));                
+            }
+            numeroLigne++;
+        }
+        fichier.close();
+    } else {
+        std::cout << "Impossible d'ouvrir le fichier de configuration \"ConfigFile.txt\"." << std::endl;
     }
+}
+
+bool Stockage::CheckIsInIgnoreFiles(string file) {
+    int size = ignoreFiles.size();
+
+    for (int i = 0; i < size; i++) {
+        if (file.find(ignoreFiles[i]) != string::npos) {
+            return true;
+        }
+    }
+    return false;
 }
 
 Stockage::Stockage(vector<vector<string> > myLignes, bool exclure, string heure)
@@ -56,17 +95,20 @@ Stockage::Stockage(vector<vector<string> > myLignes, bool exclure, string heure)
     cout << "Appel au constructeur de copie de <Stockage>" << endl;
 #endif
     int size = myLignes.size();
+    Stockage::CheckConfigFile();
+
+    vector<string> ignoreFiles; // Nouveau vecteur ignoreFiles
 
     for (int i = 0; i < size; i++) {
         Occurence tmp2;
 
-        if (myLignes[i][7].find("http://intranet-if.insa-lyon.fr") != string::npos) {
+        if (myLignes[i][7].find(ignoreSource) != string::npos) {
             myLignes[i][7] = myLignes[i][7].substr(31, myLignes[i][7].length());
         }
 
         if (myMap2.find(FormatFile(myLignes[i][4])) == myMap2.end()) {
             if (exclure) {
-                if (myLignes[i][4].find(".css") != string::npos || myLignes[i][4].find(".js") != string::npos || FormatFile(myLignes[i][4]).find(".png") != string::npos || FormatFile(myLignes[i][4]).find(".jpg") != string::npos || myLignes[i][4].find(".gif") != string::npos || myLignes[i][4].find(".ico") != string::npos || myLignes[i][4].find(".svg") != string::npos || myLignes[i][4].find(".woff") != string::npos || myLignes[i][4].find(".ttf") != string::npos || myLignes[i][4].find(".eot") != string::npos || myLignes[i][4].find(".woff2") != string::npos || myLignes[i][4].find(".otf") != string::npos) {
+                if (CheckIsInIgnoreFiles(FormatFile(myLignes[i][4]))) {
                     continue;
                 }
             }
@@ -90,7 +132,7 @@ Stockage::Stockage(vector<vector<string> > myLignes, bool exclure, string heure)
 
     // Sort myMap2 by occurrence count in ascending order
     vector<pair<string, Occurence>> sortedMap(myMap2.begin(), myMap2.end());
-    sort(sortedMap.begin(), sortedMap.end(), [](const pair<string, Occurence>& a, const pair<string, Occurence>& b) {
+    std::sort(sortedMap.begin(), sortedMap.end(), [](const pair<string, Occurence>& a, const pair<string, Occurence>& b) {
         return a.second.occ < b.second.occ;
     });
 
