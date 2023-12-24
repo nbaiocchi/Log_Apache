@@ -1,0 +1,1 @@
+cd ../..;./analog -g file.dot Fichier-Fournis/anonyme.log
